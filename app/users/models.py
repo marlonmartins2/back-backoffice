@@ -73,10 +73,10 @@ class Users:
 
         :return: The user updated
         """
-        return database[Collections.USERS].update_one(
+        return database[Collections.USERS].find_one_and_update(
             query,
             update,
-            return_document=ReturnDocument.AFTER
+            return_document=ReturnDocument.AFTER,
         )
     
 
