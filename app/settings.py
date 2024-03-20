@@ -26,4 +26,11 @@ class Settings(BaseSettings):
     PATH_CERT: str = os.getenv("PATH_CERT")
     DATABASE_ENVIRONMENT: str = os.getenv("DATABASE_ENVIRONMENT")
 
+    # JWT
+    SECRET_KEY: str = os.getenv("SECRET_KEY")
+    REFRESH_SECRET_KEY: str = os.getenv("REFRESH_SECRET_KEY")
+    ALGORITHM: str = os.getenv("ALGORITHM")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("REFRESH_TOKEN_EXPIRE_MINUTES"))
+
 settings = Settings()
