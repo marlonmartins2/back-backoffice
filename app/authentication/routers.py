@@ -4,7 +4,7 @@ from fastapi import APIRouter, status, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from services import set_password_hash, verify_password, Authorize
+from services import verify_password, Authorize
 
 from authentication import SignInModel, ReturnLoginModel, ReturnRefreshModel, RefreshModel
 
