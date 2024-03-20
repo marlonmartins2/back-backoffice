@@ -5,6 +5,8 @@ from version import __version__
 
 from settings import settings
 
+from authentication.routers import auth_router
+
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -36,3 +38,5 @@ def health_check():
     Check health of the application
     """
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+app.include_router(auth_router)
