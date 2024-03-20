@@ -52,12 +52,7 @@ class Users:
 
         :return: The user inserted
         """
-        create_user = database[Collections.USERS].insert_one(user_data)
-
-        if create_user:
-            return create_user.id
-        
-        return False
+        return database[Collections.USERS].insert_one(user_data)
 
 
     @classmethod
