@@ -8,3 +8,15 @@ class SignInModel(BaseModel):
     """
     username: str
     password: str
+
+
+class ReturnLoginModel(BaseModel):
+    """
+    Schema for the login response
+
+    :param BaseModel: Pydantic base model
+    """
+    message: str = "Login successful"
+    access_token: str
+    refresh_token: str
+    token_type: str
