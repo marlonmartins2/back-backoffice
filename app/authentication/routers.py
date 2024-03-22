@@ -14,14 +14,10 @@ from users.models import Users
 auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-@auth_router.post("/login", status_code=status.HTTP_200_OK, response_model=ReturnLoginModel)
+@auth_router.post("/login", status_code=status.HTTP_200_OK, response_model=ReturnLoginModel, summary="Endpoint to authenticate the user.")
 async def login(data: SignInModel):
     """
-    ## Login
-    Endpoint to authenticate users and generate JWT token.
-
-    :param data: authentication.schemas.SignInModel - The user login data.\n
-    :return: A dictionary containing the JWT token.
+    # Login
 
     ## Request Body
     - **username**: The username of the user.
@@ -30,6 +26,7 @@ async def login(data: SignInModel):
     ## Responses
     - **200 OK**: Returns a dictionary containing the JWT token upon successful authentication.
     - **400 Bad Request**: If the user is not found or if the username/password is incorrect.
+    - **401 Unauthorized**: If the user is not active.
     """
     user = Users.find_one({"username": data.username}, {"_id": 0})
 
@@ -37,6 +34,12 @@ async def login(data: SignInModel):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User not found, please contact the suport.",
+        )
+    
+    if not user["is_active"]:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User is not active, please contact the suport.",
         )
     
     if not verify_password(data.password, user["password"]):
@@ -49,7 +52,7 @@ async def login(data: SignInModel):
         "user_id": user["id"],
         "username": user["username"],
         "email": user["email"],
-        "role": user["role"],
+        "role_id": user["role_id"],
     }
 
     access_token = Authorize.create_access_token(token_data)
@@ -76,14 +79,10 @@ async def login(data: SignInModel):
     )
 
 
-@auth_router.post("/refresh", status_code=status.HTTP_200_OK, response_model=ReturnRefreshModel)
+@auth_router.post("/refresh", status_code=status.HTTP_200_OK, response_model=ReturnRefreshModel, summary="Endpoint to refresh JWT token.")
 async def refresh(data: RefreshModel):
     """
-    ## Refresh Token
-    Endpoint to refresh the JWT token.
-
-    :param data: authentication.schemas.RefreshModel - The refresh token.\n
-    :return: A dictionary containing the new JWT token.
+    # Refresh Token
 
     ## Request Body
     - **refresh_token**: The refresh token.
@@ -91,6 +90,7 @@ async def refresh(data: RefreshModel):
     ## Responses
     - **200 OK**: Returns a dictionary containing the new JWT token upon successful refresh.
     - **400 Bad Request**: If the refresh token is invalid or expired.
+    - **401 Unauthorized**: If the user is not active.
     """
     token_data = Authorize.decode_token(data.refresh_token)
 
@@ -98,6 +98,14 @@ async def refresh(data: RefreshModel):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid or expired refresh token, please login again.",
+        )
+    
+    user = Users.find_one({"id": token_data["user_id"]}, {"_id": 0})
+
+    if not user["is_active"]:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User is not active, please contact the suport.",
         )
 
     access_token = Authorize.create_access_token(token_data)
