@@ -3,4 +3,4 @@ updates:
   - package-ecosystem: "pip" # Define o ecossistema como pip (Python)
     directory: "/" # Localização do arquivo pyproject.toml (na raiz do projeto)
     schedule:
-      interval: "weekly"
+      interval: "daily"
