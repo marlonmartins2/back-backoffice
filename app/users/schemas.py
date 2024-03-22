@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field, EmailStr, validator
+from typing import Optional
 
 from users.models import Users
 
@@ -23,6 +24,7 @@ class RegisterUserModel(BaseModel):
     last_name: str = Field(..., title="last_name")
     cpf: str = Field(..., title="cpf")
     phone: str = Field(..., title="phone")
+    role_id: str = Field(..., title="role_id")
 
     @validator("username")
     def username_exists(cls, username):
@@ -84,3 +86,41 @@ class ReturnRegisterUserModel(BaseModel):
     :param BaseModel: Pydantic BaseModel
     """
     message: str = "User Registered Successfuly."
+
+
+class UserModel(BaseModel):
+    """
+    Schema for a user
+
+    :param BaseModel: Pydantic BaseModel
+    """
+    id: str = Field(..., title="id")
+    username: str = Field(..., title="username")
+    email: EmailStr = Field(..., title="email")
+    first_name: str = Field(..., title="first_name")
+    last_name: str = Field(..., title="last_name")
+    cpf: str = Field(..., title="cpf")
+    phone: str = Field(..., title="phone")
+    role_id: str = Field(..., title="role_id")
+    is_active: bool = Field(..., title="is_active")
+    last_login: Optional[str] = Field(None, title="last_login")
+    created_at: str = Field(..., title="created_at")
+    updated_at: Optional[str] = Field(None, title="updated_at")
+    activated_at: Optional[str] = Field(None, title="activated_at")
+    deactivated_at: Optional[str] = Field(None, title="deactivated_at")
+
+
+class UserPatchModel(BaseModel):
+    """
+    Schema for a user
+
+    :param BaseModel: Pydantic BaseModel
+    """
+    username: Optional[str] = Field(None, title="username")
+    email: Optional[EmailStr] = Field(None, title="email")
+    first_name: Optional[str] = Field(None, title="first_name")
+    last_name: Optional[str] = Field(None, title="last_name")
+    cpf: Optional[str] = Field(None, title="cpf")
+    phone: Optional[str] = Field(None, title="phone")
+    role_id: str = Field(None, title="role_id")
+    is_active: Optional[bool] = Field(None, title="is_active")
